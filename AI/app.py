@@ -58,7 +58,7 @@ def img2img(img_path, prompt, negative_prompt, num_steps=20, guidance_scale=7, s
 
     return out_image
 
-@app.route('/api2/nfts', methods=["GET"])
+@app.route('/nfts', methods=["GET"])
 def index():
     prompt = "(8k, best quality, masterpiece:1.2),(best quality:1.0), (ultra highres:1.0), a dog, watercolor, by agnes cecile, portrait, extremely luminous bright design, pastel colors, (ink:1.3), autumn lights"
     negative_prompt = "canvas frame, cartoon, 3d, ((disfigured)), ((bad art)), ((deformed)),((extra limbs)),((close up)),((b&w)), wierd colors, blurry, (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), ((ugly)), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), out of frame, ugly, extra limbs, (bad anatomy), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), mutated hands, (fused fingers), (too many fingers), (((long neck))), Photoshop, video game, ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, mutation, mutated, extra limbs, extra legs, extra arms, disfigured, deformed, cross-eye, body out of frame, blurry, bad art, bad anatomy, 3d render"
