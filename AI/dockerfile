@@ -5,12 +5,12 @@ WORKDIR .
 COPY . .
 
 ## Install system dependencies
-RUN apt-get update && apt-get install -y libgl1-mesa-glx
+RUN apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
 
 ## 가상환경 생성 및 종속성 설치
 RUN python -m venv venv
 RUN /bin/bash -c "source venv/bin/activate && pip install --no-cache-dir -r requirements.txt"
 
-## Run the application on the port 
+## Run the application on the port
 EXPOSE 9999
 CMD ["/bin/bash", "-c", "source venv/bin/activate && flask run --host=0.0.0.0 --port=9999"]
