@@ -5,16 +5,13 @@ Created on Wed May 10 09:09:55 2023
 @author: SSAFY
 """
 
-from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, AutoencoderKL, StableDiffusionPipeline
-from diffusers.utils import load_image
-from diffusers import DDIMScheduler, DPMSolverMultistepScheduler, HeunDiscreteScheduler, DDPMScheduler, EulerDiscreteScheduler, KDPM2DiscreteScheduler, EulerAncestralDiscreteScheduler, DEISMultistepScheduler, KDPM2AncestralDiscreteScheduler, UniPCMultistepScheduler, LMSDiscreteScheduler, PNDMScheduler, DPMSolverSinglestepScheduler
+from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, PNDMScheduler
+from diffusers.utils.testing_utils import load_image
 import cv2
 from PIL import Image
 import numpy as np
-from diffusers import DDPMScheduler
 import torch
-import random, sys
-from flask import Flask, render_template
+from flask import Flask
 from io import BytesIO
 from flask import send_file
 
