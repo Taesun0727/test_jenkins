@@ -4,6 +4,9 @@ WORKDIR .
 ## Copy all src files
 COPY . .
 
+## Install system dependencies
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
+
 ## 가상환경 생성 및 종속성 설치
 RUN python -m venv venv
 RUN /bin/bash -c "source venv/bin/activate && pip install --no-cache-dir -r requirements.txt"
