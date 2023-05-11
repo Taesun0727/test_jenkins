@@ -10,14 +10,19 @@ pipeline {
 
         stage('Stop and Remove Existing Container') {
             steps {
-                sh 'docker stop myflaskapp-container || true'
-                sh 'docker rm myflaskapp-container || true'
+                script {
+                    def existingContainer = sh(script: 'docker ps -a | grep flask', returnStdout: true).trim()
+                    if (existingContainer) {
+                        sh "docker stop $existingContainer || true"
+                        sh "docker rm $existingContainer || true"
+                    }
+                }
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 9999:9999 --name myflaskapp-container myflaskapp'
+                sh 'docker run -d -p 9999:9999 --name flask myflaskapp'
             }
         }
     }
