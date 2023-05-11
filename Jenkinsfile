@@ -11,7 +11,7 @@ pipeline {
         stage('Stop and Remove Existing Container') {
             steps {
                 script {
-                    def existingContainer = sh(script: 'docker ps -a | grep flask', returnStdout: true).trim()
+                    def existingContainer = sh(script: 'docker ps -a --filter "name=flask" --format "{{.ID}}"', returnStdout: true).trim()
                     if (existingContainer) {
                         sh "docker stop $existingContainer || true"
                         sh "docker rm $existingContainer || true"
