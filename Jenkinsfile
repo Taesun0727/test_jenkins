@@ -22,7 +22,7 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 9999:9999 --name fastapi myfastapiapp'
+                sh 'docker run -d -p 8999:8999 --name fastapi myfastapiapp'
             }
         }
     }
