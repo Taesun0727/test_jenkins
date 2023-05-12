@@ -21,13 +21,13 @@ def init():
      
     controlnet = ControlNetModel.from_pretrained(
         controlnet_model,
-        torch_dtype=torch.float16
+        torch_dtype=torch.float32
     )
     
     pipe = StableDiffusionControlNetPipeline.from_pretrained(
         sd_model,
         controlnet=controlnet,
-        torch_dtype=torch.float16
+        torch_dtype=torch.float32
     )
     pipe.scheduler = PNDMScheduler.from_config(pipe.scheduler.config)
     # pipe.enable_model_cpu_offload()
