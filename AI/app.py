@@ -11,16 +11,15 @@ import cv2
 from PIL import Image
 import numpy as np
 import torch
-from flask import Flask
 from io import BytesIO
-from flask import send_file
-
-app = Flask(__name__)
+from fastapi import FastAPI, Response
 
 def init():
     global pipe
     controlnet_model = "lllyasviel/sd-controlnet-canny"
     sd_model = "Lykon/DreamShaper"
+    
+    print(torch.cuda.is_available())
     
     controlnet = ControlNetModel.from_pretrained(
         controlnet_model,
@@ -35,7 +34,7 @@ def init():
     
     pipe.scheduler = PNDMScheduler.from_config(pipe.scheduler.config)
     pipe.enable_model_cpu_offload()
-
+    
 def img2img(img_path, prompt, negative_prompt, num_steps=20, guidance_scale=7, seed=0, low=100, high=200):
     image = load_image(img_path)
     image.thumbnail((512, 512))
@@ -46,7 +45,9 @@ def img2img(img_path, prompt, negative_prompt, num_steps=20, guidance_scale=7, s
     canny_image = canny_image[:, :, None]
     canny_image = np.concatenate([canny_image, canny_image, canny_image], axis=2)
     canny_image = Image.fromarray(canny_image)
-
+    
+    print("파이프 작동 전")
+    
     out_image = pipe(
         prompt,
         negative_prompt=negative_prompt,
@@ -55,11 +56,17 @@ def img2img(img_path, prompt, negative_prompt, num_steps=20, guidance_scale=7, s
         generator=torch.manual_seed(seed),
         image=canny_image
     ).images[0]
+    
+    print("파이프 작동 끝")
 
     return out_image
 
-@app.route('/nfts', methods=["GET"])
-def index():
+init()
+app = FastAPI()
+
+
+@app.get('/api2/nfts')
+def index(response: Response):
     prompt = "(8k, best quality, masterpiece:1.2),(best quality:1.0), (ultra highres:1.0), a dog, watercolor, by agnes cecile, portrait, extremely luminous bright design, pastel colors, (ink:1.3), autumn lights"
     negative_prompt = "canvas frame, cartoon, 3d, ((disfigured)), ((bad art)), ((deformed)),((extra limbs)),((close up)),((b&w)), wierd colors, blurry, (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), ((ugly)), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), out of frame, ugly, extra limbs, (bad anatomy), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), mutated hands, (fused fingers), (too many fingers), (((long neck))), Photoshop, video game, ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, mutation, mutated, extra limbs, extra legs, extra arms, disfigured, deformed, cross-eye, body out of frame, blurry, bad art, bad anatomy, 3d render"
     num_steps = 20
@@ -68,14 +75,10 @@ def index():
     
     out_image = img2img("https://people.com/thmb/CjivdYdmbNoUaEblEoFlYdF7qBU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(584x295:586x297)/coco-rescue-dog-041123-tout-34c967d00e574401aebf75325e38b14e.jpg", prompt, negative_prompt, num_steps, guidance_scale, seed)
     
-    # Save the image to a buffer
     buffer = BytesIO()
     out_image.save(buffer, 'JPEG')
     buffer.seek(0)
+    
+    return Response(content=buffer.getvalue(), media_type="image/jpeg")
 
-    return send_file(buffer, mimetype="image/jpeg")
-
-if __name__ == '__main__':
-    init()
-    app.run(host='0.0.0.0',debug=True, port=9999)
     
