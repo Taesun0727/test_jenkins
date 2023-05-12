@@ -1,16 +1,17 @@
 FROM python:3
-WORKDIR .
 
-## Copy all src files
+WORKDIR /.
+
+# Copy source code
 COPY . .
 
-## Install system dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
 
-## 가상환경 생성 및 종속성 설치
+# Create virtual environment and install dependencies
 RUN python -m venv venv
 RUN /bin/bash -c "source venv/bin/activate && pip install --no-cache-dir -r requirements.txt"
 
-## Run the application on the port
+# Expose port and start server
 EXPOSE 9999
-CMD ["/bin/bash", "-c", "source venv/bin/activate && flask run --host=0.0.0.0 --port=9999"]
+CMD ["/bin/bash", "-c", "source venv/bin/activate && uvicorn main:app --host=0.0.0.0 --port=9999"]
