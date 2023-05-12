@@ -18,9 +18,7 @@ def init():
     global pipe
     controlnet_model = "lllyasviel/sd-controlnet-canny"
     sd_model = "Lykon/DreamShaper"
-    
-    print(torch.cuda.is_available())
-    
+     
     controlnet = ControlNetModel.from_pretrained(
         controlnet_model,
         torch_dtype=torch.float16
@@ -31,10 +29,8 @@ def init():
         controlnet=controlnet,
         torch_dtype=torch.float16
     )
-    print(123)
     pipe.scheduler = PNDMScheduler.from_config(pipe.scheduler.config)
-    pipe.enable_model_cpu_offload()
-    print(456)
+    # pipe.enable_model_cpu_offload()
     
 def img2img(img_path, prompt, negative_prompt, num_steps=20, guidance_scale=7, seed=0, low=100, high=200):
     image = load_image(img_path)
